@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Comparator;
 
+import java.security.SecureRandom;
+
 @Service
 @RequiredArgsConstructor
 public class SalaService {
@@ -21,7 +23,7 @@ public class SalaService {
     private Byte geraCodigoUnico() {
         Byte codigo;
         do {
-            codigo = (byte) (10 + (int) (Math.random() * 90));
+            codigo = (byte) SECURE_RANDOM.nextInt(256);
         } while (salaRepository.buscarPorCodigo(codigo).isPresent());
         return codigo;
     }

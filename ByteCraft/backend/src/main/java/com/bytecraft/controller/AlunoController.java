@@ -7,10 +7,14 @@ import com.bytecraft.service.AlunoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.http.HttpStatus;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @RestController
 @RequestMapping("/api/alunos")
@@ -18,6 +22,8 @@ import java.util.Map;
 public class AlunoController {
 
     private final AlunoService alunoService;
+
+    private static final Logger logger = LoggerFactory.getLogger(AlunoController.class);
 
     // Login ou registro
     @PostMapping("/login")
@@ -106,7 +112,9 @@ public class AlunoController {
             return ResponseEntity.ok(alunoDTO);
 
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(Map.of("erro", e.getMessage()));
+            logger.error("Erro inesperado ao processar operação de aluno.", e);
+
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("erro", "Ocorreu um erro interno. Tente novamente mais tarde."));
         }
     }
 
@@ -176,9 +184,9 @@ public class AlunoController {
             return ResponseEntity.ok(Map.of("sucesso", true, "modoHistoriaCompleto", modoHistoriaCompleto));
 
         } catch (Exception e) {
-            System.err.println("❌ Erro ao salvar progresso: " + e.getMessage());
-            e.printStackTrace();
-            return ResponseEntity.status(500).body(Map.of("erro", "Erro ao salvar progresso: " + e.getMessage()));
+            logger.error("Erro ao salvar progresso do aluno.", e);
+
+            return ResponseEntity.status(500).body(Map.of("erro", "Não foi possível salvar o progresso."));
         }
     }
 
@@ -206,9 +214,9 @@ public class AlunoController {
             System.err.println("❌ Aluno não encontrado: " + e.getMessage());
             return ResponseEntity.status(404).body(Map.of("erro", "Aluno não encontrado"));
         } catch (Exception e) {
-            System.err.println("❌ Erro ao buscar progresso: " + e.getMessage());
-            e.printStackTrace();
-            return ResponseEntity.status(500).body(Map.of("erro", "Erro ao buscar progresso: " + e.getMessage()));
+            logger.error("Erro ao buscar progresso do aluno. Tipo de exceção: {}", e.getClass().getSimpleName());
+
+            return ResponseEntity.status(500).body(Map.of("erro", "Não foi possível obter o progresso."));
         }
     }
 }
