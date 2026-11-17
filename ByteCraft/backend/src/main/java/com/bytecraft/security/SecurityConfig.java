@@ -11,6 +11,7 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.List;
+import org.springframework.http.HttpMethod;
 
 @Configuration
 public class SecurityConfig {
@@ -21,6 +22,8 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable()) // desativa CSRF apenas para testes com front separado
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .authorizeHttpRequests(auth -> auth
+                .requestMatchers(HttpMethod.GET, "/", "/aluno", "/professor", "/professor/cadastro", "/sala", "/niveis", "/fases", "/montagem", "/montagem-interna", "/importar", "/quiz", "/index.html", "/assets/**").permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/moderation/nickname").permitAll()
                 .requestMatchers("/api/alunos/**").permitAll()
                 .requestMatchers("/api/professores/**").permitAll()
                 .requestMatchers("/api/salas/**").permitAll() 

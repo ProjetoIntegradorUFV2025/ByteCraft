@@ -4,6 +4,7 @@ import com.bytecraft.DTO.AlunoDTO;
 import com.bytecraft.enums.NivelDificuldadeEnum;
 import com.bytecraft.model.Aluno;
 import com.bytecraft.service.AlunoService;
+import com.bytecraft.moderation.NicknameModerationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +19,7 @@ import java.util.Map;
 public class AlunoController {
 
     private final AlunoService alunoService;
+    private final NicknameModerationService moderation;
 
     // Login ou registro
     @PostMapping("/login")
@@ -40,6 +42,13 @@ public class AlunoController {
             }
             if (codigoSalaStr == null || codigoSalaStr.isEmpty()) {
                 resposta.put("erro", "Código da sala é obrigatório");
+                return ResponseEntity.badRequest().body(resposta);
+            }
+
+            var decision = moderation.moderate(apelido);
+            if (decision.status().equals("inadequado")) {
+                resposta.put("erro", decision.justificativa());
+                resposta.put("moderation", decision.status());
                 return ResponseEntity.badRequest().body(resposta);
             }
 

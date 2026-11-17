@@ -1,0 +1,122 @@
+{
+  "model_version": "1.3.0-experimental",
+  "trained_at_utc": "2026-10-29T17:59:48.806150+00:00",
+  "dataset_sha256": "065dd7d020ab132041e2839a343a42f532a3348df0770f719b7de7e3490ca245",
+  "dataset_sources_sha256": {
+    "manual_evaluation.csv": "80b301a3b2e30fa2ae00d2a71a4a067a6eb49c81476299c33aa26fd0bdd30db6",
+    "bytecraft_nicknames_moderacao.csv": "af097d43f8196c1b7c288cb9365c48d6728c97466e9c54562c9a417ad239b969",
+    "nickname_examples.csv": "e6fa201630c886c264a7d4cc8b43565dddf90865d7d369db27d64a9e774e3fec"
+  },
+  "dataset_examples_total": 579,
+  "dataset_examples_by_source": {
+    "nickname_examples.csv": 359,
+    "manual_evaluation.csv": 30,
+    "bytecraft_nicknames_moderacao.csv": 190
+  },
+  "training_examples_by_source": {
+    "sintetico": 138,
+    "ldnoobw": 69,
+    "manual_evaluation": 14,
+    "bytecraft_nicknames_moderacao": 150
+  },
+  "training_examples": 371,
+  "training_classes": [
+    "permitido",
+    "inadequado"
+  ],
+  "training_class_counts": {
+    "permitido": 80,
+    "inadequado": 291
+  },
+  "training_groups": 195,
+  "excluded_ambiguous": 0,
+  "split": {
+    "strategy": "GroupShuffleSplit por root_group",
+    "test_fraction": 0.2,
+    "random_state": 42,
+    "train_examples": 297,
+    "test_examples": 74,
+    "train_groups": 156,
+    "test_groups": 39
+  },
+  "pipeline": {
+    "vectorizer": {
+      "class": "TfidfVectorizer",
+      "analyzer": "char",
+      "ngram_range": [
+        2,
+        5
+      ],
+      "preprocessor": "src.nickname_normalization.normalize_nickname"
+    },
+    "classifier": {
+      "class": "LogisticRegression",
+      "class_weight": "balanced",
+      "max_iter": 1000,
+      "random_state": 42,
+      "solver": "liblinear"
+    }
+  },
+  "evaluation": {
+    "evaluated_examples": 74,
+    "accuracy": 0.8378378378378378,
+    "per_class": {
+      "permitido": {
+        "precision": 0.38461538461538464,
+        "recall": 0.5555555555555556,
+        "f1-score": 0.45454545454545453,
+        "support": 9.0
+      },
+      "inadequado": {
+        "precision": 0.9344262295081968,
+        "recall": 0.8769230769230769,
+        "f1-score": 0.9047619047619048,
+        "support": 65.0
+      }
+    },
+    "macro_f1": 0.6796536796536796,
+    "precision_inadequado": 0.9344262295081968,
+    "recall_inadequado": 0.8769230769230769,
+    "f1_inadequado": 0.9047619047619048,
+    "confusion_matrix_labels": [
+      "permitido",
+      "inadequado"
+    ],
+    "confusion_matrix": [
+      [
+        5,
+        4
+      ],
+      [
+        8,
+        57
+      ]
+    ],
+    "false_positives_count": 4,
+    "false_negatives_count": 8,
+    "automatic_block_decision": {
+      "minimum_confidence": 0.6,
+      "blocked_examples": 29,
+      "true_positives": 27,
+      "false_positives": 2,
+      "false_negatives": 38,
+      "true_negatives": 7,
+      "precision": 0.9310344827586207,
+      "recall": 0.4153846153846154
+    },
+    "lexical_baseline": null,
+    "lexical_baseline_skipped_uncertain": 53,
+    "lexical_baseline_coverage": 0.28378378378378377
+  },
+  "versions": {
+    "pandas": "3.1.0",
+    "scikit_learn": "1.9.1",
+    "joblib": "1.6.0"
+  },
+  "limitations": [
+    "Base sintética e não representativa de apelidos reais de estudantes.",
+    "Métricas exploratórias de um único holdout agrupado.",
+    "O limiar 0.60 foi escolhido experimentalmente e ainda apresenta falsos positivos.",
+    "Rótulo ambiguo excluído do treinamento supervisionado."
+  ]
+}

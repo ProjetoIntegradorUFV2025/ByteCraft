@@ -17,12 +17,14 @@
     <groupId>com</groupId>
     <artifactId>bytecraft</artifactId>
     <version>0.0.1-SNAPSHOT</version>
+    <packaging>war</packaging>
     <name>bytecraft</name>
     <description>PI2025-Equipe 5° ano.</description>
 
     <!-- Propriedades -->
     <properties>
         <java.version>17</java.version>
+        <frontend.base>/</frontend.base>
     </properties>
 
     <!-- Dependências -->
@@ -43,6 +45,12 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-tomcat</artifactId>
+            <scope>provided</scope>
         </dependency>
 
         <!-- Lombok -->
@@ -88,7 +96,36 @@
 
     <!-- Build Plugins -->
     <build>
+        <finalName>bytecraft</finalName>
         <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>3.5.1</version>
+                <executions>
+                    <execution>
+                        <id>build-frontend</id>
+                        <phase>generate-resources</phase>
+                        <goals><goal>exec</goal></goals>
+                        <configuration>
+                            <executable>powershell.exe</executable>
+                            <arguments>
+                                <argument>-NoProfile</argument>
+                                <argument>-ExecutionPolicy</argument><argument>Bypass</argument>
+                                <argument>-File</argument><argument>${project.basedir}/scripts/build-frontend.ps1</argument>
+                                <argument>-BasePath</argument><argument>${frontend.base}</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <configuration>
+                    <failOnMissingWebXml>false</failOnMissingWebXml>
+                </configuration>
+            </plugin>
             <!-- Maven Compiler -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

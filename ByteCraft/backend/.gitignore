@@ -31,3 +31,6 @@ build/
 
 ### VS Code ###
 .vscode/
+
+# Generated exclusively from frontend/dist by Maven
+/src/main/webapp/
